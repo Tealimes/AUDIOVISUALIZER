@@ -1,5 +1,7 @@
 #include <arduinoFFT.h>
 
+#define LED_BUILTIN 5
+
 const int MIC_IN = A4; //mic pin
 
 // FFT
@@ -29,4 +31,8 @@ void setup(){
 }
 void loop(){
   //gets samples from microphone
+  delay(1000);
+  Serial.print("yippee");
+  delay(1000);
+
 }
