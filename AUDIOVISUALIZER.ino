@@ -13,9 +13,12 @@ void micCapture(void *parameter); // gets microphone inpiut
 // Globals
 static TaskHandle_t mic_capture;
 
+unsigned long startTime = 0;
+
 // FFT
 const int SAMPLES = 1024;
 const int SAMPLE_FREQ = 40000;
+const long SAMPLE_INTERVAL = round(1000000 * (1 / SAMPLE_FREQ));
 
 // FFT arrays
 double vReal[SAMPLES];
@@ -65,10 +68,24 @@ void loop(){
 void micCapture(void *parameter){
   vTaskSuspend(NULL); //initially suspend this task
   Serial.println("Getting Microphone Input");
-  while(1){
-    digitalWrite(LED_BUILTIN, HIGH);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    digitalWrite(LED_BUILTIN, LOW);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  for(int i = 0; i < SAMPLES; i++){
+    startTime = micros();
+    vReal[i] = analogRead(MIC_IN);
+    vImag[i] = 0.0;
+    while(micros() < (startTime + SAMPLE_INTERVAL));
   }
+
+  // prints inputs
+  for(int i = 0; i < SAMPLES; i++){
+    Serial.print(vReal[i]);
+    Serial.print("");
+  }
+  Serial.println("");
+
+  // FFT computations
+  FFT.dcRemoval();
+  FFT.windowing(FFTWindow::Hamming, FFTDirection::Forward);
+  FFT.compute(FFTDirection::Forward);
+  FFT.complexToMagnitude();
+
 }
