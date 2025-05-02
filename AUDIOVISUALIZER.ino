@@ -45,7 +45,7 @@ void setup(){
   );
 
   // intial delay
-  vTaskDelay(10000 / portTICK_PERIOD_MS);
+  vTaskDelay(5000 / portTICK_PERIOD_MS);
 
   // unsuspend tasks
   vTaskResume(mic_capture);
@@ -69,5 +69,6 @@ void micCapture(void *parameter){
     digitalWrite(LED_BUILTIN, HIGH);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     digitalWrite(LED_BUILTIN, LOW);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
